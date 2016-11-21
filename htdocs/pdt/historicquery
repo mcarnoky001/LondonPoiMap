@@ -1,0 +1,13 @@
+SELECT json_build_object(
+    'type',       'Feature',
+    'id',         osm_id,
+    'geometry',   ST_AsGeoJSON(way),
+    'properties', json_build_object(
+        'NAME', name,
+        'area', ST_Area(way),
+        'amenity', amenity,
+        'historic', historic
+        
+     )
+ )
+ FROM planet_osm_point where (amenity is not null AND name is not null) OR historic is not null;
