@@ -510,7 +510,6 @@ function dataBuilder(gj, type) {
   buildListings(data);
 }
 function dataChanger(gj, type) {
-	data = [];
   gj.forEach(function(feature) {
    feature[0].properties.type = type;
     data.push(feature[0]);
@@ -569,11 +568,6 @@ function buildListings(features) {
         popup.remove();
       });
     });
-  } else {
-    var emptyState = document.createElement('div');
-    emptyState.className = 'pad1 prose';
-    emptyState.textContent = document.getElementById('legend').textContent;
-    $listing.appendChild(emptyState);
   }
 };
 function showPopup(feature) {
@@ -582,25 +576,9 @@ function showPopup(feature) {
     .addTo(map);
 }
 function getFeatures() {
-  var bbox = $svg.getBoundingClientRect();
-  var center = {
-     x: bbox.left + bbox.width / 2,
-     y: bbox.top + bbox.height / 2
-  };
-
-  var radius = $svg.getAttribute('width') / 2;
-  map.queryRenderedFeatures({x: center.x, y: center.y}, {
-    radius: radius,
-    includeGeometry: true,
-    layer: pois
-  }, function(err, features) {
-   if (err || !features.length) {
-      popup.remove();
-      return;
-    }
+  var features = map.queryRenderedFeatures({ layers: pois }); 
 
     buildListings(features);
-  });
 }
 
 
@@ -645,43 +623,101 @@ function onUp(e) {
     canvas.style.cursor = '';
     isDragging = false;
 }
+map.on('style.load', addData);
 $(document).ready(function(e) {
-        $.ajax({
+	data = [];
+	document.getElementById('filter-categories').addEventListener('change', function(e) {
+    var id = 'poi-' + e.target.id;
+    var display = (e.target.checked) ? 'visible' : 'none';
+    map.setLayoutProperty(id, 'visibility', display);
+	window.setTimeout(getFeatures, 500);
+  });
+      $.ajax({
         type: "POST",
-        url: "http://pdt.localhost:8082/cgi-bin/controll.py",
+        url: "http://pdt.localhost:8082/cgi-bin/statue.py",
 		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
-        success: callbackFunc
+        success: callbackFunc1
     });
-	function callbackFunc(response) {
-    // do something with the response
-	dataBuilder(JSON.parse(response), 'art');
-	}	
-        
-});
-function sendAjaxRequest(){
 	$.ajax({
         type: "POST",
-        url: "http://pdt.localhost:8082/cgi-bin/controll.py",
+        url: "http://pdt.localhost:8082/cgi-bin/memorial.py",
 		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
-        success: callbackFunc
+        success: callbackFunc2
     });
-	function callbackFunc(response) {
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/monument.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc3
+    });
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/other.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc4
+    });
+	function callbackFunc1(response) {
     // do something with the response
 	dataChanger(JSON.parse(response), 'art');
 	}
-}
-function showAll(){
-	console.log("shown");
+	function callbackFunc2(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'theatre');
+	}
+	function callbackFunc3(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'music');
+	}
+	function callbackFunc4(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'museum');
+	}
+        
+});
+function sendAjaxRequest(){
+	data = [];
+	
 	$.ajax({
         type: "POST",
-        url: "http://pdt.localhost:8082/cgi-bin/controll.py",
-        success: callbackFunc
+        url: "http://pdt.localhost:8082/cgi-bin/statue.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc1
     });
-	function callbackFunc(response) {
-    // do something with the responsef
-    console.log(response);
-	}	
-};
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/memorial.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc2
+    });
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/monument.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc3
+    });
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/other.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc4
+    });
+	function callbackFunc1(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'art');
+	}
+	function callbackFunc2(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'theatre');
+	}
+	function callbackFunc3(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'music');
+	}
+	function callbackFunc4(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'museum');
+	}
+}
 map.on('click', onMapClick);
 map.on('contextmenu', onRightMapClick)
 
@@ -785,13 +821,10 @@ map.on('load', function () {
 map.once('source.change', function(ev) {
   if (ev.source.id !== 'geojson') return;
 
-  window.setTimeout(getFeatures, 500);
-
   document.getElementById('filter-categories').addEventListener('change', function(e) {
     var id = 'poi-' + e.target.id;
     var display = (e.target.checked) ? 'visible' : 'none';
     map.setLayoutProperty(id, 'visibility', display);
-    window.setTimeout(getFeatures, 500);
   });
 
   document.body.classList.remove('loading');
