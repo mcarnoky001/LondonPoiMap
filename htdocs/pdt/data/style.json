@@ -3,56 +3,72 @@
     "id": "poi-museum",
     "interactive": true,
     "type": "symbol",
-    "source": "geojson",
+    "source": "points",
     "filter": [
       "all",
       ["in", "type", "museum"]
     ],
     "layout": {
       "icon-image": "{type}",
-      "icon-allow-overlap": true
+      "icon-allow-overlap": true,
+	  "text-field": "{title}",
+      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+      "text-offset": [0, 0.6],
+      "text-anchor": "top"
     }
   },
   {
     "id": "poi-theatre",
     "interactive": true,
     "type": "symbol",
-    "source": "geojson",
+    "source": "points",
     "filter": [
       "all",
       ["in", "type", "theatre"]
     ],
     "layout": {
       "icon-image": "{type}",
-      "icon-allow-overlap": true
+      "icon-allow-overlap": true,
+	  "text-field": "{title}",
+      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+      "text-offset": [0, 0.6],
+      "text-anchor": "top"
     }
   },
   {
     "id": "poi-music",
     "interactive": true,
     "type": "symbol",
-    "source": "geojson",
+    "source": "points",
     "filter": [
       "all",
       ["in", "type", "music"]
     ],
     "layout": {
       "icon-image": "{type}",
-      "icon-allow-overlap": true
+      "icon-allow-overlap": true,
+	  "text-field": "{title}",
+      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+      "text-offset": [0, 0.6],
+      "text-anchor": "top"
     }
   },
   {
     "id": "poi-art",
     "interactive": true,
     "type": "symbol",
-    "source": "geojson",
+    "source": "points",
     "filter": [
       "all",
       ["in", "type", "art"]
     ],
     "layout": {
       "icon-image": "{type}",
-      "icon-allow-overlap": true
+      "icon-allow-overlap": true,
+	  "text-field": "{title}",
+      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+      "text-offset": [0, 0.6],
+      "text-anchor": "top"
     }
   }
 ]

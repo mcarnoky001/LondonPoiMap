@@ -1,12 +1,25 @@
+'use strict';
 var radius = 100;
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFqb2MxMjMiLCJhIjoiY2l1d254MGV3MDAwbjJvbThoeDJiNG9vZiJ9.vP_YEJHRnnvRRJgeTV9yTw';
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFqb2MxMjMiLCJhIjoiY2l1aGViY2V6MDA1NzJ6b2dxMmhqNzNjciJ9.0oqSP023dVB0CuoL2jQgEg';
+var path = require('path');
+var template = require('lodash.template');
+
+var pathToFile = path.join(__dirname, 'listing.html');
+
+var fs = require('fs');
+var file = fs.readFileSync(__dirname + '/listing.html', 'utf8');
+
+var listingTemplate = template(file);
+ 
+
 	var map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v9', //stylesheet location
+    style: 'mapbox://styles/majoc123/civu62vv1004y2krhy1jeka2o', //stylesheet location
     center: [-0.12801291382615432, 51.509375139851585], // starting position
     zoom: 15 // starting zoom
 	});
-	
+
+var dataStyle = JSON.parse(fs.readFileSync(path.join(__dirname, '../../data/style.json'), 'utf8'));	
 
 $( function() {
     $( "#slider-range-max" ).slider({
@@ -82,6 +95,7 @@ function dataBuilder(gj, type) {
     data.push(feature[0]);
   });
   addData();
+  buildListings(data);
 }
 function dataChanger(gj, type) {
 	data = [];
@@ -95,6 +109,7 @@ function dataChanger(gj, type) {
             "features": data
         }
   source.setData(dataObj)
+  buildListings(data);
 }
 // Layer style
 //var dataStyle = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/style.json'), 'utf8'));
@@ -107,7 +122,7 @@ function addData() {
         }
     });
 
-    map.addLayer({
+    /*map.addLayer({
         "id": "points",
         "type": "symbol",
         "source": "points",
@@ -118,11 +133,10 @@ function addData() {
             "text-offset": [0, 0.6],
             "text-anchor": "top"
         }
-    });
-
-  /*dataStyle.forEach(function(style) {
+    });*/
+	dataStyle.forEach(function(style) {
     map.addLayer(style);
-  });*/
+  });
 };
 function buildListings(features) {
   var $listing = document.getElementById('listing');
@@ -150,6 +164,11 @@ function buildListings(features) {
     $listing.appendChild(emptyState);
   }
 };
+function showPopup(feature) {
+  popup.setLngLat(feature.geometry.coordinates)
+    .setHTML(feature.properties.title)
+    .addTo(map);
+}
 function getFeatures() {
   var bbox = $svg.getBoundingClientRect();
   var center = {
@@ -198,15 +217,15 @@ function onMove(e) {
     // and call setData to the source layer `point` on it.
     geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
 	longitudeOnMap = coords.lng;
+	latitudeOnMap = coords.lat;
     map.getSource('point').setData(geojson);
 	map.getSource('source_circle_500').setData(geojson);
-	sendAjaxRequest();
 }
 //TOTO je pre modry bod
 function onUp(e) {
     if (!isDragging) return;
     var coords = e.lngLat;
-
+	sendAjaxRequest();
     // Print the coordinates of where the point had
     // finished being dragged to on the map.
 	// TODO tu zavolat query na hladane veci
