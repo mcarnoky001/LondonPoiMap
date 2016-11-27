@@ -26,7 +26,7 @@ $( function() {
       range: "max",
       min: 3,
       max: 13,
-      value: 3,
+      value: 7,
       slide: function( event, ui ) {
 		  radiusInMeters = ui.value * 100;
 		  map.setPaintProperty('circle500', 'circle-radius',{
@@ -45,13 +45,13 @@ $( function() {
 const metersToPixelsAtMaxZoom = (meters, latitude) =>
   meters / 0.075 / Math.cos(latitude * Math.PI / 180)
 
- var radiusInMeters = 300;
+ var radiusInMeters = 700;
  var longitudeOnMap = -0.12801291382615432
  var latitudeOnMap =  51.509375139851585;
 map.addControl(new mapboxgl.NavigationControl({
   position: 'top-right'
 }));
-var pois = ['poi-art', 'poi-music', 'poi-theatre', 'poi-museum'];
+var pois = ['poi-art', 'poi-music', 'poi-theatre', 'poi-museum', 'poi-toilet'];
 var $svg, lastValue = 0;
 var popup = new mapboxgl.Popup({
   closeButton: false
@@ -120,19 +120,6 @@ function addData() {
             "features": data
         }
     });
-
-    /*map.addLayer({
-        "id": "points",
-        "type": "symbol",
-        "source": "points",
-        "layout": {
-            "icon-image": "{icon}-15",
-            "text-field": "{title}",
-            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-            "text-offset": [0, 0.6],
-            "text-anchor": "top"
-        }
-    });*/
 	dataStyle.forEach(function(style) {
     map.addLayer(style);
   });
@@ -156,6 +143,12 @@ function buildListings(features) {
         popup.remove();
       });
     });
+  }
+  else {
+    var emptyState = document.createElement('div');
+    emptyState.className = 'pad1 prose';
+    emptyState.textContent = document.getElementById('legend').textContent;
+    $listing.appendChild(emptyState);
   }
 };
 function showPopup(feature) {
@@ -244,6 +237,12 @@ $(document).ready(function(e) {
 		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
         success: callbackFunc4
     });
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/closestToilet.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc5
+    });
 	function callbackFunc1(response) {
     // do something with the response
 	dataChanger(JSON.parse(response), 'art');
@@ -259,6 +258,10 @@ $(document).ready(function(e) {
 	function callbackFunc4(response) {
     // do something with the response
 	dataChanger(JSON.parse(response), 'museum');
+	}
+	function callbackFunc5(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'toilet');
 	}
         
 });
@@ -289,6 +292,12 @@ function sendAjaxRequest(){
 		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
         success: callbackFunc4
     });
+	$.ajax({
+        type: "POST",
+        url: "http://pdt.localhost:8082/cgi-bin/closestToilet.py",
+		data: { longitude: longitudeOnMap, latitude : latitudeOnMap, radius:radiusInMeters},
+        success: callbackFunc5
+    });
 	function callbackFunc1(response) {
     // do something with the response
 	dataChanger(JSON.parse(response), 'art');
@@ -304,6 +313,10 @@ function sendAjaxRequest(){
 	function callbackFunc4(response) {
     // do something with the response
 	dataChanger(JSON.parse(response), 'museum');
+	}
+	function callbackFunc5(response) {
+    // do something with the response
+	dataChanger(JSON.parse(response), 'toilet');
 	}
 }
 map.on('click', onMapClick);

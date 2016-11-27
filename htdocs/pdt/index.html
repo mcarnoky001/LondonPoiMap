@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Monuments map of London</title>
+    <title>Historic node map of London</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -33,17 +33,24 @@
   <div class='fill-white full-height-container'>
     <div id='filter-categories' class='checkbox-pill col12 clearfix'>
       <input type='checkbox' id='art' checked='checked'>
-      <label for='art' class='col6 truncate icon check unround button'>Statue</label>
+      <label for='art' class='col6 truncate icon check unround button'>Archaeological Site</label>
       <input type='checkbox' id='theatre' checked='checked'>
       <label for='theatre' class='col6 truncate icon check unround button'>Memorial</label>
       <input type='checkbox' id='music' checked='checked'>
       <label for='music' class='col6 truncate icon check unround button'>Monument</label>
       <input type='checkbox' id='museum' checked='checked'>
       <label for='museum' class='col6 truncate icon check unround button'>Other</label>
+	  <input type='checkbox' id='toilet' checked='checked'>
+      <label for='toilet' class='col12 truncate icon check unround button'>Closest toilet</label>
     </div>
 	<div id="slider-range-max"></div>  
     <div id='listing' class='scroll round-bottom fill-light round-bottom'>
     </div>
+  </div>
+</div>
+<div id='legend' class='pin-bottomright z1 pad2y legend'>
+  <div class='pad1 fill-lighten3 radius small'>
+    Drag the blue point over the map to show points at location and populate listing.Increases or decreases the radius of search is done by slider in left menu.
   </div>
 </div>
 
